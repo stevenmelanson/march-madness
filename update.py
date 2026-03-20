@@ -503,8 +503,8 @@ def fetch_espn_scores(date_str=None):
             "name": event.get("name", ""),
             "teams": teams,
             "completed": status_type.get("completed", False),
-            "in_progress": status_type.get("name") == "STATUS_IN_PROGRESS",
-            "scheduled": status_type.get("name") == "STATUS_SCHEDULED",
+            "in_progress": status_type.get("state") == "in",  # Catches halftime, OT, etc.
+            "scheduled": status_type.get("state") == "pre",
             "start_time": game_date,
             "status_detail": status_type.get("detail", ""),
         })
@@ -1080,7 +1080,7 @@ def main():
         if not match:
             continue
         ri, gi, bracket_game = match
-        if bracket_game['st'] != 'p':
+        if bracket_game['st'] not in ('p', 'lv'):
             continue  # Already finalized
 
         teams = espn_game['teams']
