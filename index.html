@@ -184,6 +184,10 @@ main{padding:22px 28px}
 .mu2-spread{padding:4px 10px;font-family:'DM Mono',monospace;font-size:9px;display:flex;align-items:center;justify-content:center;gap:6px;background:rgba(251,191,36,.03);border-top:1px solid rgba(251,191,36,.06);color:var(--gold)}
 .mu2-spread.tbd{color:var(--muted);font-style:italic;background:none;border-top-color:var(--border)}
 .mu2-cover-badge{font-size:7px;font-weight:700;color:var(--cover);background:rgba(196,181,253,.1);padding:1px 4px;border-radius:3px}
+.mu2.live{border-left:3px solid var(--lose);animation:livePulse 2s infinite}
+.mu2-live-badge{font-size:7px;font-weight:700;color:#fff;background:var(--lose);padding:1px 5px;border-radius:3px;letter-spacing:.5px;animation:liveBlink 1.5s infinite}
+@keyframes livePulse{0%,100%{box-shadow:0 0 0 rgba(239,68,68,0)}50%{box-shadow:0 0 8px rgba(239,68,68,.15)}}
+@keyframes liveBlink{0%,100%{opacity:1}50%{opacity:.5}}
 
 /* ── FINAL FOUR ── */
 .ff{margin-top:24px;max-width:600px;margin-left:auto;margin-right:auto;padding:28px;background:linear-gradient(135deg,rgba(251,191,36,.04),rgba(249,115,22,.04));border:1px solid rgba(251,191,36,.15);border-radius:16px;text-align:center}
@@ -593,7 +597,7 @@ const REGIONS=[
     {id:'W4',rd:1,top:{s:4,n:'Arkansas'},bot:{s:13,n:"Hawai'i"},sp:'Arkansas -15.5',st:'wt',score:'97-78'},
     {id:'W5',rd:1,top:{s:6,n:'BYU'},bot:{s:11,n:'Texas'},sp:'BYU -2.5',st:'xb',score:'71-79'},
     {id:'W6',rd:1,top:{s:3,n:'Gonzaga'},bot:{s:14,n:'Kennesaw St'},sp:'Gonzaga -14.5',st:'ct',score:'73-64'},
-    {id:'W1',rd:1,top:{s:1,n:'Arizona'},bot:{s:16,n:'Long Island'},sp:'Arizona -30.5',st:'p'},
+    {id:'W1',rd:1,top:{s:1,n:'Arizona'},bot:{s:16,n:'Long Island'},sp:'Arizona -30.5',st:'lv',score:'47-20'},
     {id:'W2',rd:1,top:{s:8,n:'Villanova'},bot:{s:9,n:'Utah State'},sp:'Utah State -1.5',st:'p'},
     {id:'W7',rd:1,top:{s:7,n:'Miami (FL)'},bot:{s:10,n:'Missouri'},sp:'Miami (FL) -3.5',st:'p'},
     {id:'W8',rd:1,top:{s:2,n:'Purdue'},bot:{s:15,n:'Queens'},sp:'Purdue -21.5',st:'p'},
@@ -625,11 +629,11 @@ const REGIONS=[
   {id:'midwest',name:'Midwest',games:[
     {id:'M1',rd:1,top:{s:1,n:'Michigan'},bot:{s:16,n:'Howard'},sp:'Michigan -28.5',st:'ct',score:'101-80'},
     {id:'M2',rd:1,top:{s:8,n:'Georgia'},bot:{s:9,n:'Saint Louis'},sp:'Saint Louis -1.5',st:'wb',score:'77-102'},
-    {id:'M3',rd:1,top:{s:5,n:'Texas Tech'},bot:{s:12,n:'Akron'},sp:'Texas Tech -7.5',st:'p'},
+    {id:'M3',rd:1,top:{s:5,n:'Texas Tech'},bot:{s:12,n:'Akron'},sp:'Texas Tech -7.5',st:'lv',score:'66-60'},
     {id:'M4',rd:1,top:{s:4,n:'Alabama'},bot:{s:13,n:'Hofstra'},sp:'Alabama -12.5',st:'p'},
     {id:'M5',rd:1,top:{s:6,n:'Tennessee'},bot:{s:11,n:'Miami OH'},sp:'Tennessee -11.5',st:'p'},
-    {id:'M6',rd:1,top:{s:3,n:'Virginia'},bot:{s:14,n:'Wright St'},sp:'Virginia -14.5',st:'p'},
-    {id:'M7',rd:1,top:{s:7,n:'Kentucky'},bot:{s:10,n:'Santa Clara'},sp:'Kentucky -3.5',st:'p'},
+    {id:'M6',rd:1,top:{s:3,n:'Virginia'},bot:{s:14,n:'Wright St'},sp:'Virginia -14.5',st:'lv',score:'23-24'},
+    {id:'M7',rd:1,top:{s:7,n:'Kentucky'},bot:{s:10,n:'Santa Clara'},sp:'Kentucky -3.5',st:'lv',score:'77-76'},
     {id:'M8',rd:1,top:{s:2,n:'Iowa State'},bot:{s:15,n:'Tennessee St'},sp:'Iowa State -24.5',st:'p'},
     {id:'M9',rd:2,top:{s:1,n:'Michigan'},bot:{s:9,n:'Saint Louis'},sp:'Michigan -12.5',st:'p'},
     {id:'M10',rd:2,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
@@ -883,6 +887,50 @@ function renderOwnerLegend(){
 // ═══════════════════════════════════════════════
 //  FLOW BRACKET — Glassmorphism ESPN-style
 // ═══════════════════════════════════════════════
+// Bracket ordering: sort R64 games so pairs align with their R32 matchups
+// Maps each R64 game to its R32 target for ordering
+const BRACKET_ORDER={
+  // East: E1+E2→E9, E5+E6→E10, E3+E4→E11, E7+E8→E12
+  E1:{r32:'E9',pos:0},E2:{r32:'E9',pos:1},
+  E3:{r32:'E11',pos:0},E4:{r32:'E11',pos:1},
+  E5:{r32:'E10',pos:0},E6:{r32:'E10',pos:1},
+  E7:{r32:'E12',pos:0},E8:{r32:'E12',pos:1},
+  // West: W3+W4→W9, W5+W6→W10, W1+W2→W11, W7+W8→W12
+  W1:{r32:'W11',pos:0},W2:{r32:'W11',pos:1},
+  W3:{r32:'W9',pos:0},W4:{r32:'W9',pos:1},
+  W5:{r32:'W10',pos:0},W6:{r32:'W10',pos:1},
+  W7:{r32:'W12',pos:0},W8:{r32:'W12',pos:1},
+  // South: S1+S2→S9, S3+S4→S10, S5+S6→S11, S7+S8→S12
+  S1:{r32:'S9',pos:0},S2:{r32:'S9',pos:1},
+  S3:{r32:'S10',pos:0},S4:{r32:'S10',pos:1},
+  S5:{r32:'S11',pos:0},S6:{r32:'S11',pos:1},
+  S7:{r32:'S12',pos:0},S8:{r32:'S12',pos:1},
+  // Midwest: M1+M2→M9, M3+M4→M10, M5+M6→M11, M7+M8→M12
+  M1:{r32:'M9',pos:0},M2:{r32:'M9',pos:1},
+  M3:{r32:'M10',pos:0},M4:{r32:'M10',pos:1},
+  M5:{r32:'M11',pos:0},M6:{r32:'M11',pos:1},
+  M7:{r32:'M12',pos:0},M8:{r32:'M12',pos:1},
+};
+
+function sortBracketGames(games, rd){
+  if(rd===1){
+    // Sort R64 games so pairs align with R32 order
+    // Group by their R32 target, then sort groups by R32 game number
+    return [...games].sort((a,b)=>{
+      const aInfo=BRACKET_ORDER[a.id]||{r32:'Z',pos:0};
+      const bInfo=BRACKET_ORDER[b.id]||{r32:'Z',pos:0};
+      if(aInfo.r32!==bInfo.r32) return aInfo.r32.localeCompare(bInfo.r32);
+      return aInfo.pos-bInfo.pos;
+    });
+  }
+  // R32+ games: sort by game ID number
+  return [...games].sort((a,b)=>{
+    const aNum=parseInt(a.id.slice(1));
+    const bNum=parseInt(b.id.slice(1));
+    return aNum-bNum;
+  });
+}
+
 function renderFlowBracket(){
   renderOwnerLegend();
   const container=document.getElementById('brk-regions');
@@ -911,7 +959,8 @@ function renderFlowBracket(){
       const col=document.createElement('div');
       col.className='brk-round-col';
       col.innerHTML=`<div class="brk-round-label">${RND[rd]||'Round '+rd}</div>`;
-      byRound[rd].forEach(g=>col.appendChild(buildMatchup2(g, reg.id, maxRd)));
+      const sorted=sortBracketGames(byRound[rd], rd);
+      sorted.forEach(g=>col.appendChild(buildMatchup2(g, reg.id, maxRd)));
       grid.appendChild(col);
     });
 
@@ -927,15 +976,18 @@ function renderFlowBracket(){
 function buildMatchup2(g, regId, maxRd){
   const d=document.createElement('div');
   const done=['wt','wb','ct','cb','xt','xb'].includes(g.st);
+  const isLive=g.st==='lv';
   const isCover=['ct','cb'].includes(g.st);
   const isUpset=['xt','xb'].includes(g.st);
   const isTBD=g.top.n==='TBD'&&g.bot.n==='TBD';
   const topWon=['wt','ct','xt'].includes(g.st);
   const botWon=['wb','cb','xb'].includes(g.st);
+  const hasScore=done||isLive;
 
   let cls='mu2';
   if(g.rd<maxRd) cls+=' has-conn';
   if(isTBD) cls+=' future';
+  else if(isLive) cls+=' live';
   else if(done){
     cls+=' done';
     if(isCover) cls+=' win-cover';
@@ -958,7 +1010,7 @@ function buildMatchup2(g, regId, maxRd){
     const seedCls=regCode==='M'?'M':regCode;
     const ownerCol=COLORS[owner.owner]||'#888';
     const pill=`<span class="mu2-owner" style="background:${ownerCol}18;color:${ownerCol};border:1px solid ${ownerCol}30">${owner.owner}</span>`;
-    const scoreH=done&&score?`<span class="mu2-score">${score}</span>`:'';
+    const scoreH=hasScore&&score?`<span class="mu2-score">${score}</span>`:'';
     const wTag=done&&isW?`<span class="mu2-wtag">W</span>`:'';
     const uTag=done&&isW&&isUpset?`<span class="mu2-utag">UPSET</span>`:'';
     const rowCls=isW?'mu2-team winner':isL?'mu2-team loser':'mu2-team';
@@ -971,6 +1023,8 @@ function buildMatchup2(g, regId, maxRd){
 
   if(isTBD){
     html+=`<div class="mu2-spread tbd">Awaiting matchup</div>`;
+  } else if(isLive){
+    html+=`<div class="mu2-spread" style="background:rgba(239,68,68,.06);border-top-color:rgba(239,68,68,.15)"><span class="mu2-live-badge">LIVE</span>${g.sp?`<span style="color:var(--gold)">🔒 ${g.sp}</span>`:''}</div>`;
   } else if(g.sp){
     html+=`<div class="mu2-spread"><span>🔒 ${g.sp}</span>${isCover?'<span class="mu2-cover-badge">COVER TRANSFER</span>':''}</div>`;
   } else {

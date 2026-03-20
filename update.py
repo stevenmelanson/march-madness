@@ -722,7 +722,7 @@ def match_espn_to_bracket(espn_game, regions, mapping):
     # Find matching bracket game
     for ri, reg in enumerate(regions):
         for gi, game in enumerate(reg['games']):
-            if game['st'] != 'p':  # Already processed
+            if game['st'] not in ('p', 'lv'):  # Already finalized
                 continue
             game_teams = {game['top']['n'], game['bot']['n']}
             if set(names) == game_teams:
@@ -965,7 +965,7 @@ def validate(alloc, regions, log):
     completed_games = sum(
         1 for reg in regions
         for game in reg['games']
-        if game['st'] != 'p'
+        if game['st'] not in ('p', 'lv')
     )
     if len(log) != completed_games:
         errors.append(f"LOG has {len(log)} entries but {completed_games} completed games in bracket")
@@ -1024,8 +1024,8 @@ def main():
             continue
 
         ri, gi, bracket_game = match
-        if bracket_game['st'] != 'p':
-            continue  # Already processed
+        if bracket_game['st'] not in ('p', 'lv'):
+            continue  # Already finalized
 
         # Get team scores mapped to top/bot
         teams = espn_game['teams']
@@ -1071,6 +1071,43 @@ def main():
 
     if new_results > 0:
         changes.append(f"{new_results} new game results")
+
+    # Update live/in-progress game scores (no spread logic, just score display)
+    in_progress_espn = [g for g in espn_games if g['in_progress']]
+    live_updates = 0
+    for espn_game in in_progress_espn:
+        match = match_espn_to_bracket(espn_game, regions, mapping)
+        if not match:
+            continue
+        ri, gi, bracket_game = match
+        if bracket_game['st'] != 'p':
+            continue  # Already finalized
+
+        teams = espn_game['teams']
+        top_html = resolve_team_name(teams[0]['name'], mapping) or resolve_team_name(teams[0]['full_name'], mapping)
+        bot_html = resolve_team_name(teams[1]['name'], mapping) or resolve_team_name(teams[1]['full_name'], mapping)
+
+        # Map ESPN scores to bracket top/bot positions
+        if top_html == bracket_game['top']['n']:
+            top_score, bot_score = teams[0]['score'], teams[1]['score']
+        elif top_html == bracket_game['bot']['n']:
+            top_score, bot_score = teams[1]['score'], teams[0]['score']
+        else:
+            continue
+
+        new_score = f"{top_score}-{bot_score}"
+        old_score = bracket_game.get('score')
+        if new_score != old_score:
+            bracket_game['score'] = new_score
+            # Set status to 'live' so the UI can show a LIVE indicator
+            # We use 'lv' as a custom status that means "in progress"
+            bracket_game['st'] = 'lv'
+            live_updates += 1
+            detail = espn_game.get('status_detail', '')
+            print(f"  🔴 {bracket_game['id']}: {bracket_game['top']['n']} {top_score} - {bracket_game['bot']['n']} {bot_score} ({detail})")
+
+    if live_updates > 0:
+        changes.append(f"{live_updates} live score updates")
 
     # Fetch and update spreads — only if there are games needing spreads
     # Spreads lock at 9AM EST and should NOT be updated after that
