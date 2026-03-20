@@ -316,6 +316,7 @@ tr:hover td{background:rgba(255,255,255,.02)}
 .tg-acq{color:var(--cover);font-weight:700;display:block;margin-top:2px}
 .tg-spread-tbd{color:var(--muted);font-style:italic}
 .tg-cover-card{border-color:rgba(196,181,253,.3)!important;background:rgba(196,181,253,.03)!important}
+.tg-live-card{border-color:rgba(239,68,68,.3)!important;animation:livePulse 2s infinite}
 
 @media(max-width:640px){
   header{padding:14px 16px}
@@ -1088,6 +1089,8 @@ function renderTodaysGames(){
       if(!g){html+=`<div class="tg-card"><div class="tg-card-head"><span class="tg-time">${time}</span></div><div style="padding:10px;font-size:11px;color:var(--muted)">Game ${id}</div></div>`;return;}
 
       const done=['wt','wb','ct','cb','xt','xb'].includes(g.st);
+      const isLive=g.st==='lv';
+      const hasScore=done||isLive;
       const tgOwnerLookup=done?ORIG_OWN:OWN;
       const ot=tgOwnerLookup[g.top.n]||OWN[g.top.n]||{owner:'—'};
       const ob=tgOwnerLookup[g.bot.n]||OWN[g.bot.n]||{owner:'—'};
@@ -1102,26 +1105,26 @@ function renderTodaysGames(){
       const topOwnerPill=`<span class="tg-owner" style="background:${topCol}22;color:${topCol}">${ot.owner}</span>`;
       const botOwnerPill=`<span class="tg-owner" style="background:${botCol}22;color:${botCol}">${ob.owner}</span>`;
 
-      // Result line
+      // Result/status line
       let resultLine='';
       if(done){
         const winner=topWon?g.top.n:g.bot.n;
         const margin=Math.abs(parseInt(scores[0])-parseInt(scores[1]));
         const sp=g.sp||'';
-        const spNum=parseFloat((sp.match(/[\d.]+$/)||['0'])[0]);
         if(coverTransfer){
-          const loser=topWon?g.bot.n:g.top.n;
           const loserOwner=topWon?ob.owner:ot.owner;
-          const winnerOwner=topWon?ot.owner:ob.owner;
           resultLine=`<div class="tg-result-line">${sp} · ${winner} wins by ${margin}</div><div class="tg-acq">📦 SPREAD COVERED — ${winner} → ${loserOwner}</div>`;
         } else {
           resultLine=`<div class="tg-result-line">${sp} · ${winner} wins by ${margin}</div>`;
         }
+      } else if(isLive){
+        resultLine=`<span class="mu2-live-badge" style="margin-right:6px">LIVE</span><span class="tg-spread">${g.sp?'🔒 '+g.sp:''}</span>`;
       }
 
-      html+=`<div class="tg-card${coverTransfer?' tg-cover-card':''}">
+      const cardCls=coverTransfer?' tg-cover-card':isLive?' tg-live-card':'';
+      html+=`<div class="tg-card${cardCls}">
         <div class="tg-card-head">
-          <span class="tg-time">${time} · <span style="color:var(--muted2)">${reg==='M'?'MIDWEST':reg==='E'?'EAST':reg==='W'?'WEST':'SOUTH'} Region</span></span>
+          <span class="tg-time">${isLive?'<span class="mu2-live-badge" style="margin-right:4px">LIVE</span>':''}${time} · <span style="color:var(--muted2)">${reg==='M'?'MIDWEST':reg==='E'?'EAST':reg==='W'?'WEST':'SOUTH'} Region</span></span>
           <span class="tg-region ${reg}">${reg==='M'?'MW':reg}</span>
         </div>
         <div class="tg-teams">
@@ -1129,18 +1132,20 @@ function renderTodaysGames(){
             <span class="tg-seed">${g.top.s||''}</span>
             <span class="tg-name">${g.top.n}</span>
             ${topOwnerPill}
-            ${done?`<span class="tg-score">${scores[0]}</span>`:''}
+            ${hasScore?`<span class="tg-score">${scores[0]}</span>`:''}
             ${done&&topWon?`<span class="tg-final-badge">FINAL</span>`:''}
           </div>
           <div class="tg-team${botWon?' tw':done&&!botWon?' tl':''}">
             <span class="tg-seed">${g.bot.s||''}</span>
             <span class="tg-name">${g.bot.n}</span>
             ${botOwnerPill}
-            ${done?`<span class="tg-score">${scores[1]}</span>`:''}
+            ${hasScore?`<span class="tg-score">${scores[1]}</span>`:''}
           </div>
         </div>
-        <div class="tg-footer">
+        <div class="tg-footer"${isLive?' style="background:rgba(239,68,68,.06);border-top-color:rgba(239,68,68,.15)"':''}>
           ${done
+            ? resultLine
+            : isLive
             ? resultLine
             : `<span class="tg-spread">${g.sp?'🔒 '+g.sp:''}</span><span class="tg-spread-tbd">${g.sp?'':' Spread TBD — locks 9AM EST'}</span>`}
         </div>
@@ -1161,7 +1166,8 @@ function renderLog(){
   const el=document.getElementById('log-body');
   if(!LOG.length){el.innerHTML='<tr class="empty"><td colspan="7">No results yet</td></tr>';return;}
   const rb={WIN:'w',COVER:'c',UPSET:'u',LOSS:'l'};
-  el.innerHTML=LOG.map(e=>`<tr>
+  // Reverse so most recent game is on top
+  el.innerHTML=[...LOG].reverse().map(e=>`<tr>
     <td>${e.date}</td><td>${e.round}</td>
     <td style="font-weight:500">${e.top} vs ${e.bot}</td>
     <td style="font-family:'DM Mono',monospace">${e.score||'—'}</td>
