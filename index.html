@@ -915,12 +915,14 @@ const BRACKET_ORDER={
 
 function sortBracketGames(games, rd){
   if(rd===1){
-    // Sort R64 games so pairs align with R32 order
-    // Group by their R32 target, then sort groups by R32 game number
+    // Sort R64 games so pairs align with R32 order (E9,E10,E11,E12)
     return [...games].sort((a,b)=>{
-      const aInfo=BRACKET_ORDER[a.id]||{r32:'Z',pos:0};
-      const bInfo=BRACKET_ORDER[b.id]||{r32:'Z',pos:0};
-      if(aInfo.r32!==bInfo.r32) return aInfo.r32.localeCompare(bInfo.r32);
+      const aInfo=BRACKET_ORDER[a.id]||{r32:'Z99',pos:0};
+      const bInfo=BRACKET_ORDER[b.id]||{r32:'Z99',pos:0};
+      // Sort by R32 target numeric value, then by position within pair
+      const aNum=parseInt(aInfo.r32.slice(1));
+      const bNum=parseInt(bInfo.r32.slice(1));
+      if(aNum!==bNum) return aNum-bNum;
       return aInfo.pos-bInfo.pos;
     });
   }
