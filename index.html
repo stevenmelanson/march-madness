@@ -676,6 +676,18 @@ Object.entries(ALLOC).forEach(([p,ts])=>ts.forEach(t=>{
   }
 }));
 
+// Original ownership — who owned each team BEFORE any transfers
+// For transferred teams, the original owner has elim:true without acq
+const ORIG_OWN={};
+Object.entries(ALLOC).forEach(([p,ts])=>ts.forEach(t=>{
+  const existing=ORIG_OWN[t.n];
+  if(!existing){
+    ORIG_OWN[t.n]={owner:p};
+  } else if(t.elim && !t.acq){
+    ORIG_OWN[t.n]={owner:p};
+  }
+}));
+
 function activeTeams(player){return ALLOC[player].filter(t=>!t.elim&&!t.transferred);}
 function allTeams(player){return ALLOC[player];}
 
@@ -934,8 +946,10 @@ function buildMatchup2(g, regId, maxRd){
 
   const scores=g.score?g.score.split('-'):['',''];
   const regCode=regId[0].toUpperCase();
-  const ot=OWN[g.top.n]||{owner:'—'};
-  const ob=OWN[g.bot.n]||{owner:'—'};
+  // For completed games, show original owner (pre-transfer) so cards make sense
+  const ownerLookup=done?ORIG_OWN:OWN;
+  const ot=ownerLookup[g.top.n]||OWN[g.top.n]||{owner:'—'};
+  const ob=ownerLookup[g.bot.n]||OWN[g.bot.n]||{owner:'—'};
 
   function teamRow(team, isW, isL, score, owner){
     if(team.n==='TBD'){
@@ -1031,9 +1045,10 @@ function renderTodaysGames(){
       const g=gameLookup[id];
       if(!g){html+=`<div class="tg-card"><div class="tg-card-head"><span class="tg-time">${time}</span></div><div style="padding:10px;font-size:11px;color:var(--muted)">Game ${id}</div></div>`;return;}
 
-      const ot=OWN[g.top.n]||{owner:'—'};
-      const ob=OWN[g.bot.n]||{owner:'—'};
       const done=['wt','wb','ct','cb','xt','xb'].includes(g.st);
+      const tgOwnerLookup=done?ORIG_OWN:OWN;
+      const ot=tgOwnerLookup[g.top.n]||OWN[g.top.n]||{owner:'—'};
+      const ob=tgOwnerLookup[g.bot.n]||OWN[g.bot.n]||{owner:'—'};
       let topWon=false,botWon=false;
       if(['wt','ct','xt'].includes(g.st)) topWon=true;
       else if(['wb','cb','xb'].includes(g.st)) botWon=true;
