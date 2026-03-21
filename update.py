@@ -892,19 +892,27 @@ def serialize_log(log):
 
 # ─── Spread Update ───────────────────────────────────────
 def update_spreads(regions, dk_spreads, mapping):
-    """Update spread fields in REGIONS for upcoming games."""
+    """Update spread fields in REGIONS for all upcoming games."""
+    all_games = [g for reg in regions for g in reg['games']
+                 if g['st'] == 'p' and g['sp'] is None
+                 and g['top']['n'] != 'TBD' and g['bot']['n'] != 'TBD']
+    return update_spreads_today_only(regions, dk_spreads, mapping, all_games)
+
+
+def update_spreads_today_only(regions, dk_spreads, mapping, eligible_games):
+    """Update spread fields only for specific games (today's games).
+    eligible_games: list of game dicts that are confirmed playing today."""
     if not dk_spreads:
         return 0
 
+    eligible_ids = {g['id'] for g in eligible_games}
     count = 0
     for reg in regions:
         for game in reg['games']:
+            if game['id'] not in eligible_ids:
+                continue
             if game['sp'] is not None:
                 continue  # Already has a spread
-            if game['st'] != 'p':
-                continue  # Already played
-            if game['top']['n'] == 'TBD' or game['bot']['n'] == 'TBD':
-                continue  # Teams not yet determined
 
             # Try to find a spread for this matchup
             top_name = game['top']['n']
@@ -1109,27 +1117,47 @@ def main():
     if live_updates > 0:
         changes.append(f"{live_updates} live score updates")
 
-    # Fetch and update spreads — only if there are games needing spreads
+    # Fetch and update spreads — only for games playing TODAY.
     # Once a spread is written (sp is not None), it is NEVER overwritten.
-    # This ensures the lock: first fetch = locked line.
-    games_needing_spreads = sum(
-        1 for reg in regions for g in reg['games']
-        if g['st'] == 'p' and g['sp'] is None
-        and g['top']['n'] != 'TBD' and g['bot']['n'] != 'TBD'
-    )
+    # We use ESPN's today scoreboard to know exactly which teams play today,
+    # so we don't lock in stale lines for tomorrow's games.
+    today_espn = fetch_espn_scores()  # No date param = today's games
+    today_teams = set()
+    for eg in today_espn:
+        for t in eg.get('teams', []):
+            today_teams.add(t['name'])
+            today_teams.add(t['full_name'])
+            today_teams.add(t['abbreviation'])
 
-    if games_needing_spreads > 0:
-        print(f"\nFetching DraftKings spreads ({games_needing_spreads} games need spreads)...")
+    games_needing_spreads = []
+    for reg in regions:
+        for g in reg['games']:
+            if g['st'] != 'p' or g['sp'] is not None:
+                continue
+            if g['top']['n'] == 'TBD' or g['bot']['n'] == 'TBD':
+                continue
+            # Check if either team is playing today per ESPN
+            top_match = g['top']['n'] in today_teams or any(
+                resolve_team_name(t, mapping) == g['top']['n'] for t in today_teams
+            )
+            bot_match = g['bot']['n'] in today_teams or any(
+                resolve_team_name(t, mapping) == g['bot']['n'] for t in today_teams
+            )
+            if top_match or bot_match:
+                games_needing_spreads.append(g)
+
+    if games_needing_spreads:
+        print(f"\nFetching DraftKings spreads ({len(games_needing_spreads)} games playing today need spreads)...")
         dk_spreads = fetch_draftkings_spreads()
         if dk_spreads:
-            spread_count = update_spreads(regions, dk_spreads, mapping)
+            spread_count = update_spreads_today_only(regions, dk_spreads, mapping, games_needing_spreads)
             if spread_count > 0:
                 changes.append(f"{spread_count} spreads updated")
                 print(f"  Updated {spread_count} spreads")
         else:
             print("  No spreads available (API key missing or no upcoming lines)")
     else:
-        print("\nAll games have spreads — skipping Odds API call")
+        print("\nNo games playing today need spreads — skipping Odds API call")
 
     # Validate
     print("\nRunning validation...")
