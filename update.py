@@ -1110,19 +1110,15 @@ def main():
         changes.append(f"{live_updates} live score updates")
 
     # Fetch and update spreads — only if there are games needing spreads
-    # Spreads lock at 9AM EST and should NOT be updated after that
+    # Once a spread is written (sp is not None), it is NEVER overwritten.
+    # This ensures the lock: first fetch = locked line.
     games_needing_spreads = sum(
         1 for reg in regions for g in reg['games']
         if g['st'] == 'p' and g['sp'] is None
         and g['top']['n'] != 'TBD' and g['bot']['n'] != 'TBD'
     )
 
-    # Check if we're past the 9:30AM EST lock window (14:30 UTC)
-    now_utc = datetime.now(timezone.utc)
-    est_hour = (now_utc.hour - 5) % 24  # Rough EST conversion
-    past_lock = est_hour >= 10  # After 10AM EST = well past the 9AM lock
-
-    if games_needing_spreads > 0 and not past_lock:
+    if games_needing_spreads > 0:
         print(f"\nFetching DraftKings spreads ({games_needing_spreads} games need spreads)...")
         dk_spreads = fetch_draftkings_spreads()
         if dk_spreads:
@@ -1132,8 +1128,6 @@ def main():
                 print(f"  Updated {spread_count} spreads")
         else:
             print("  No spreads available (API key missing or no upcoming lines)")
-    elif games_needing_spreads > 0 and past_lock:
-        print(f"\nPast 9AM EST lock — {games_needing_spreads} games still need spreads but won't fetch (locked)")
     else:
         print("\nAll games have spreads — skipping Odds API call")
 
