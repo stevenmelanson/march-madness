@@ -801,11 +801,15 @@ function renderGrid(){
       </div>
       <div class="pteams">
         ${teams.sort((a,b)=>(a.s||99)-(b.s||99)).map(t=>{
-          const cls=t.acq?' acq':t.elim?' elim':t.transferred?' transferred':'';
-          const badge=t.acq
-            ?`<span class="adot">ACQ from ${t.from||'?'}</span>`
-            :t.elim
+          const isElim=t.elim||false;
+          const isAcq=t.acq||false;
+          const cls=isElim?' elim':isAcq?' acq':t.transferred?' transferred':'';
+          const badge=isElim&&isAcq
+            ?`<span style="font-size:8px;color:var(--lose);font-family:'DM Mono',monospace;padding:1px 4px;background:rgba(239,68,68,.1);border-radius:3px">OUT</span><span class="adot" style="opacity:.5">was ACQ from ${t.from||'?'}</span>`
+            :isElim
             ?`<span style="font-size:8px;color:var(--lose);font-family:'DM Mono',monospace;padding:1px 4px;background:rgba(239,68,68,.1);border-radius:3px">OUT</span>`
+            :isAcq
+            ?`<span class="adot">ACQ from ${t.from||'?'}</span>`
             :'';
           return`<div class="trow${cls}">
             <span class="sd ${t.r}">${t.s}</span>
