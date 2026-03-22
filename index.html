@@ -546,7 +546,7 @@ const ALLOC={
     {n:'Florida',s:1,r:'S'},
     {n:'Iowa State',s:2,r:'M'},
     {n:"St. John's",s:5,r:'E'},
-    {n:'Miami (FL)',s:7,r:'W'},
+    {n:'Miami (FL)',s:7,r:'W',elim:true},
     {n:'Gonzaga',s:3,r:'W',elim:true,acq:true,from:'Kaz'},
     {n:'Utah State',s:9,r:'W'},
     {n:'Texas',s:11,r:'W'},
@@ -610,9 +610,9 @@ const REGIONS=[
     {id:'W9',rd:2,top:{s:12,n:'High Point'},bot:{s:4,n:'Arkansas'},sp:'Arkansas -11.5',st:'cb',score:'88-94'},
     {id:'W10',rd:2,top:{s:11,n:'Texas'},bot:{s:3,n:'Gonzaga'},sp:'Gonzaga -6.5',st:'xt',score:'74-68'},
     {id:'W11',rd:2,top:{s:1,n:'Arizona'},bot:{s:9,n:'Utah State'},sp:'Arizona -12.5',st:'p'},
-    {id:'W12',rd:2,top:{s:7,n:'Miami (FL)'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'lv',score:'54-62'},
+    {id:'W12',rd:2,top:{s:7,n:'Miami (FL)'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'wb',score:'69-79'},
     {id:'W13',rd:3,top:{s:4,n:'Arkansas'},bot:{s:11,n:'Texas'},sp:null,st:'p'},
-    {id:'W14',rd:3,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
+    {id:'W14',rd:3,top:{s:null,n:'TBD'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
     {id:'W15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
   {id:'south',name:'South',games:[
@@ -695,6 +695,7 @@ const LOG=[
   {date:'Mar 22',round:'R32',top:'VCU',bot:'Illinois',score:'55-76',spread:'Illinois -11.5',result:'WIN',acq:null},
   {date:'Mar 22',round:'R32',top:'Vanderbilt',bot:'Nebraska',score:'72-74',spread:'Vanderbilt -2.5',result:'UPSET',acq:null},
   {date:'Mar 22',round:'R32',top:'High Point',bot:'Arkansas',score:'88-94',spread:'Arkansas -11.5',result:'COVER',acq:'Arkansas → MJ (High Point covered)'},
+  {date:'Mar 22',round:'R32',top:'Miami (FL)',bot:'Purdue',score:'69-79',spread:'Purdue -7.5',result:'WIN',acq:null},
 ];
 
 // ═══════════════════════════════════════════════
