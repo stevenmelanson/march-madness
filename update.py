@@ -890,6 +890,76 @@ def serialize_log(log):
     return "\n".join(lines)
 
 
+def generate_schedule(regions, espn_games, mapping):
+    """Auto-generate SCHEDULE array from ESPN game data + bracket."""
+    from collections import defaultdict
+
+    # Map ESPN games to bracket game IDs with their start times
+    game_times = {}  # bracket_game_id -> (start_time_str, region_letter)
+    for eg in espn_games:
+        for reg in regions:
+            for bg in reg['games']:
+                if bg['top']['n'] == 'TBD' or bg['bot']['n'] == 'TBD':
+                    continue
+                top_html = resolve_team_name(eg['teams'][0]['name'], mapping) or \
+                           resolve_team_name(eg['teams'][0]['full_name'], mapping)
+                bot_html = resolve_team_name(eg['teams'][1]['name'], mapping) or \
+                           resolve_team_name(eg['teams'][1]['full_name'], mapping)
+                if (top_html == bg['top']['n'] and bot_html == bg['bot']['n']) or \
+                   (top_html == bg['bot']['n'] and bot_html == bg['top']['n']):
+                    game_times[bg['id']] = {
+                        'start': eg['start_time'],
+                        'reg': reg['id'][0],  # E, W, S, M
+                    }
+
+    # Group by date
+    days = defaultdict(list)
+    for gid, info in game_times.items():
+        if not info['start']:
+            continue
+        # Parse ESPN date (ISO format like "2026-03-21T16:15Z")
+        try:
+            dt = datetime.fromisoformat(info['start'].replace('Z', '+00:00'))
+            # Convert to ET (UTC-4 during March DST)
+            et = dt - timedelta(hours=4)
+            date_key = et.strftime("%Y-%m-%d")
+            time_str = et.strftime("%-I:%M %p ET").replace(" 0", " ")
+            day_label = et.strftime("%A, %B %-d").replace(" 0", " ")
+        except (ValueError, TypeError):
+            continue
+        days[date_key].append({
+            'time': time_str,
+            'reg': info['reg'],
+            'id': gid,
+            'sort_key': et,
+            'day_label': day_label,
+        })
+
+    # Sort days and games within each day
+    schedule = []
+    for date_key in sorted(days.keys()):
+        day_games = sorted(days[date_key], key=lambda x: x['sort_key'])
+        schedule.append({
+            'date': day_games[0]['day_label'],
+            'sub': 'Spreads locked · DraftKings · 9AM EST',
+            'games': [{'time': g['time'], 'reg': g['reg'], 'id': g['id']} for g in day_games],
+        })
+
+    return schedule
+
+
+def serialize_schedule(schedule):
+    """Convert Python SCHEDULE list back to JS source."""
+    lines = ["const SCHEDULE=["]
+    for day in schedule:
+        lines.append(f"  {{date:'{day['date']}',sub:'{day['sub']}',games:[")
+        for g in day['games']:
+            lines.append(f"    {{time:'{g['time']}',reg:'{g['reg']}',id:'{g['id']}'}},")
+        lines.append("  ]},")
+    lines.append("];")
+    return "\n".join(lines)
+
+
 # ─── Spread Update ───────────────────────────────────────
 def update_spreads(regions, dk_spreads, mapping):
     """Update spread fields in REGIONS for all upcoming games."""
@@ -1159,6 +1229,37 @@ def main():
     else:
         print("\nNo games playing today need spreads — skipping Odds API call")
 
+    # Clear premature spreads — any game whose round hasn't started yet
+    # should not have a locked spread. Only today's games should have spreads.
+    now_et = datetime.now(timezone.utc) - timedelta(hours=4)
+    today_str = now_et.strftime("%Y-%m-%d")
+    for reg in regions:
+        for g in reg['games']:
+            if g['st'] != 'p' or g['sp'] is None:
+                continue
+            # Check if this game's round has started yet
+            rd = g['rd']
+            rd_dates = ROUND_DATES.get(rd, [])
+            if not rd_dates:
+                continue
+            first_date = rd_dates[0]
+            if today_str < first_date:
+                # This round hasn't started — clear premature spread
+                print(f"  ⚠️ Clearing premature spread for {g['id']}: {g['sp']} (round starts {first_date})")
+                g['sp'] = None
+                changes.append(f"cleared premature spread on {g['id']}")
+
+    # Auto-generate SCHEDULE from ESPN data
+    print("\nGenerating schedule from ESPN data...")
+    new_schedule = generate_schedule(regions, espn_games, mapping)
+    if new_schedule:
+        schedule_changed = True
+        print(f"  Generated schedule with {len(new_schedule)} game days")
+    else:
+        schedule_changed = False
+        new_schedule = None
+        print("  No schedule data available")
+
     # Validate
     print("\nRunning validation...")
     errors = validate(alloc, regions, log)
@@ -1172,7 +1273,7 @@ def main():
         print("  ✅ All validation checks passed")
 
     # Write back if changes
-    if not changes:
+    if not changes and not schedule_changed:
         print("\n  No changes detected — HTML is up to date.")
         return
 
@@ -1183,12 +1284,14 @@ def main():
     new_regions = serialize_regions(regions)
     new_log = serialize_log(log)
 
-    # Replace blocks in HTML (work backwards to preserve offsets)
-    # Order: LOG comes after REGIONS which comes after ALLOC in the file
-    # We need to re-extract positions since they may shift
-
     # Re-read and replace each block
     html = read_html()
+
+    # Replace SCHEDULE if we generated new one
+    if new_schedule:
+        new_sched_str = serialize_schedule(new_schedule)
+        old_sched_str, ss, se = extract_js_block(html, 'SCHEDULE')
+        html = html[:ss] + new_sched_str + html[se:]
 
     # Replace LOG
     old_log_str, ls, le = extract_js_block(html, 'LOG')
