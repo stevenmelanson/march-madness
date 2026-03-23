@@ -596,8 +596,8 @@ const REGIONS=[
     {id:'E10',rd:2,top:{s:6,n:'Louisville'},bot:{s:3,n:'Michigan St'},sp:'Michigan St -4.5',st:'wb',score:'69-77'},
     {id:'E11',rd:2,top:{s:5,n:"St. John's"},bot:{s:4,n:'Kansas'},sp:"St. John's -3.5",st:'ct',score:'67-65'},
     {id:'E12',rd:2,top:{s:7,n:'UCLA'},bot:{s:2,n:'UConn'},sp:'UConn -4.5',st:'wb',score:'57-73'},
-    {id:'E13',rd:3,top:{s:1,n:'Duke'},bot:{s:3,n:'Michigan St'},sp:null,st:'p'},
-    {id:'E14',rd:3,top:{s:5,n:"St. John's"},bot:{s:2,n:'UConn'},sp:null,st:'p'},
+    {id:'E13',rd:3,top:{s:1,n:'Duke'},bot:{s:5,n:"St. John's"},sp:null,st:'p'},
+    {id:'E14',rd:3,top:{s:3,n:'Michigan St'},bot:{s:2,n:'UConn'},sp:null,st:'p'},
     {id:'E15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
   {id:'west',name:'West',games:[
@@ -613,8 +613,8 @@ const REGIONS=[
     {id:'W10',rd:2,top:{s:11,n:'Texas'},bot:{s:3,n:'Gonzaga'},sp:'Gonzaga -6.5',st:'xt',score:'74-68'},
     {id:'W11',rd:2,top:{s:1,n:'Arizona'},bot:{s:9,n:'Utah State'},sp:'Arizona -12.5',st:'ct',score:'78-66'},
     {id:'W12',rd:2,top:{s:7,n:'Miami (FL)'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'wb',score:'69-79'},
-    {id:'W13',rd:3,top:{s:4,n:'Arkansas'},bot:{s:11,n:'Texas'},sp:null,st:'p'},
-    {id:'W14',rd:3,top:{s:1,n:'Arizona'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
+    {id:'W13',rd:3,top:{s:1,n:'Arizona'},bot:{s:4,n:'Arkansas'},sp:null,st:'p'},
+    {id:'W14',rd:3,top:{s:11,n:'Texas'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
     {id:'W15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
   {id:'south',name:'South',games:[
@@ -935,13 +935,13 @@ function renderOwnerLegend(){
 // Standard NCAA: 1v16, 8v9, 5v12, 4v13, 6v11, 3v14, 7v10, 2v15
 // R32 pairs must align: first R32 game sits between R64 games 0-1, second between 2-3, etc.
 const DISPLAY_ORDER={
-  // East: E9=E1+E2, E10=E5+E6 → E13=E9+E10 | E11=E3+E4, E12=E7+E8 → E14=E11+E12
-  E1:0,E2:1,E5:2,E6:3,E3:4,E4:5,E7:6,E8:7,
-  E9:0,E10:1,E11:2,E12:3,
+  // East: 1,8,5,4,6,3,7,2 | S16: E9+E11→E13(1v5), E10+E12→E14(3v2)
+  E1:0,E2:1,E3:2,E4:3,E5:4,E6:5,E7:6,E8:7,
+  E9:0,E11:1,E10:2,E12:3,
   E13:0,E14:1,E15:0,
-  // West: W9=W3+W4, W10=W5+W6 → W13=W9+W10 | W11=W1+W2, W12=W7+W8 → W14=W11+W12
-  W3:0,W4:1,W5:2,W6:3,W1:4,W2:5,W7:6,W8:7,
-  W9:0,W10:1,W11:2,W12:3,
+  // West: 1,8,5,4,6,3,7,2 | S16: W11+W9→W13(1v4), W10+W12→W14(6v2)
+  W1:0,W2:1,W3:2,W4:3,W5:4,W6:5,W7:6,W8:7,
+  W11:0,W9:1,W10:2,W12:3,
   W13:0,W14:1,W15:0,
   // South: S9=S1+S2, S10=S3+S4 → S13=S9+S10 | S11=S5+S6, S12=S7+S8 → S14=S11+S12
   S1:0,S2:1,S3:2,S4:3,S5:4,S6:5,S7:6,S8:7,
