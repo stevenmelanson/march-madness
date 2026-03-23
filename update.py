@@ -74,6 +74,8 @@ ADVANCEMENT = {
     "M9": ("M13", "top"), "M10": ("M13", "bot"),
     "M11": ("M14", "top"), "M12": ("M14", "bot"),
     "M13": ("M15", "top"), "M14": ("M15", "bot"),
+    # TODO: Add Final Four (F1, F2) and Championship (CHAMP) advancement
+    # when those game slots are added to index.html REGIONS data
 }
 
 
@@ -802,7 +804,7 @@ def apply_game_result(alloc, regions, log, game_id, result, espn_date, bracket_g
     # 4. Add to LOG
     # Format date
     date_obj = datetime.strptime(espn_date[:10], "%Y-%m-%d") if espn_date else datetime.now()
-    date_str = date_obj.strftime("Mar %d").replace(" 0", " ")
+    date_str = date_obj.strftime("%b %d").replace(" 0", " ")
 
     log_entry = {
         'date': date_str,
