@@ -11,6 +11,8 @@ on:
     - cron: '*/10 0-5 28-31 3 *'          # Sweet 16 + Elite Eight late night
     - cron: '*/10 16-23 4,6 4 *'          # Final Four + Championship daytime
     - cron: '*/10 0-5 5,7 4 *'            # Final Four + Championship late night
+    - cron: '0 13 27-30 3 *'               # Morning spread fetch: 9AM ET on Sweet 16 + E8 game days
+    - cron: '0 13 4,6 4 *'                # Morning spread fetch: 9AM ET on F4/Championship game days
     - cron: '0 10 20-23,28-31 3 *'        # Morning cleanup: 6AM ET after game days
     - cron: '0 10 5,7 4 *'                # Morning cleanup: 6AM ET after F4/Championship
 
