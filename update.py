@@ -103,7 +103,9 @@ def resolve_team_name(espn_name, mapping):
         " Broncos", " Zips", " Pride", " Rams", " Trojans", " Aggies",
         " Paladins", " Flashes", " Highlanders", " Royals", " Bison",
         " Lancers", " Blackbirds", " Rainbow Warriors", " Cougars",
-        " Cardinals", " Bulls", " Mountaineers", " Hawkeyes",
+        " Cardinals", " Bulls", " Mountaineers", " Hawkeyes", " Cornhuskers",
+        " Longhorns", " Nittany Lions", " Bearcats", " Shockers", " Miners",
+        " Rainbow Warriors", " Owls", " Penguins", " Gamecocks", " Musketeers",
     ]
     for suffix in common_mascots:
         if espn_name.endswith(suffix):
