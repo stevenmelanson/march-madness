@@ -7,11 +7,11 @@ on:
     # March 19-22 (R64/R32), March 27-30 (S16/E8), April 4+6 (F4/Champ)
     - cron: '*/10 16-23 19-22 3 *'        # R64 + R32 daytime (noon-8PM ET)
     - cron: '*/10 0-5 20-23 3 *'          # R64 + R32 late night (8PM-1AM ET, next UTC day)
-    - cron: '*/10 16-23 27-30 3 *'        # Sweet 16 + Elite Eight daytime
-    - cron: '*/10 0-5 28-31 3 *'          # Sweet 16 + Elite Eight late night
+    - cron: '*/10 16-23 26-30 3 *'        # Sweet 16 + Elite Eight daytime
+    - cron: '*/10 0-5 27-31 3 *'          # Sweet 16 + Elite Eight late night
     - cron: '*/10 16-23 4,6 4 *'          # Final Four + Championship daytime
     - cron: '*/10 0-5 5,7 4 *'            # Final Four + Championship late night
-    - cron: '0 13 27-30 3 *'               # Morning spread fetch: 9AM ET on Sweet 16 + E8 game days
+    - cron: '0 13 26-30 3 *'               # Morning spread fetch: 9AM ET on Sweet 16 + E8 game days
     - cron: '0 13 4,6 4 *'                # Morning spread fetch: 9AM ET on F4/Championship game days
     - cron: '0 10 20-23,28-31 3 *'        # Morning cleanup: 6AM ET after game days
     - cron: '0 10 5,7 4 *'                # Morning cleanup: 6AM ET after F4/Championship
