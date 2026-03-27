@@ -511,7 +511,7 @@ const ALLOC={
   ],
   Mitchell:[
     {n:'UConn',s:2,r:'E',elim:true},
-    {n:'Nebraska',s:4,r:'S'},
+    {n:'Nebraska',s:4,r:'S',elim:true},
     {n:'Vanderbilt',s:5,r:'S',elim:true},
     {n:'Texas Tech',s:5,r:'M',elim:true},
     {n:'Kentucky',s:7,r:'M',elim:true},
@@ -533,7 +533,7 @@ const ALLOC={
   ],
   Cody:[
     {n:'Michigan',s:1,r:'M',elim:true},
-    {n:'Purdue',s:2,r:'W'},
+    {n:'Purdue',s:2,r:'W',elim:true},
     {n:'Virginia',s:3,r:'M',elim:true},
     {n:'Arkansas',s:4,r:'W',elim:true},
     {n:'Wisconsin',s:5,r:'W',elim:true},
@@ -550,10 +550,11 @@ const ALLOC={
     {n:'Miami (FL)',s:7,r:'W',elim:true},
     {n:'Gonzaga',s:3,r:'W',elim:true,acq:true,from:'Kaz'},
     {n:'Utah State',s:9,r:'W',elim:true},
-    {n:'Texas',s:11,r:'W'},
+    {n:'Texas',s:11,r:'W',elim:true},
     {n:'McNeese',s:12,r:'S',elim:true},
     {n:'Kennesaw St',s:14,r:'W',elim:true},
     {n:'Arizona',s:1,r:'W',acq:true,from:'Kaz'},
+    {n:'Purdue',s:2,r:'W',acq:true,from:'Cody'},
   ],
   MJ:[
     {n:'Michigan St',s:3,r:'E'},
@@ -614,8 +615,8 @@ const REGIONS=[
     {id:'W11',rd:2,top:{s:1,n:'Arizona'},bot:{s:9,n:'Utah State'},sp:'Arizona -12.5',st:'ct',score:'78-66'},
     {id:'W12',rd:2,top:{s:7,n:'Miami (FL)'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'wb',score:'69-79'},
     {id:'W13',rd:3,top:{s:1,n:'Arizona'},bot:{s:4,n:'Arkansas'},sp:'Arizona -8.5',st:'p'},
-    {id:'W14',rd:3,top:{s:11,n:'Texas'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'lv',score:'30-35'},
-    {id:'W15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
+    {id:'W14',rd:3,top:{s:11,n:'Texas'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'cb',score:'77-79'},
+    {id:'W15',rd:4,top:{s:null,n:'TBD'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
   ]},
   {id:'south',name:'South',games:[
     {id:'S3',rd:1,top:{s:5,n:'Vanderbilt'},bot:{s:12,n:'McNeese'},sp:'Vanderbilt -8.5',st:'wt',score:'78-68'},
@@ -630,9 +631,9 @@ const REGIONS=[
     {id:'S10',rd:2,top:{s:5,n:'Vanderbilt'},bot:{s:4,n:'Nebraska'},sp:'Vanderbilt -2.5',st:'xb',score:'72-74'},
     {id:'S11',rd:2,top:{s:11,n:'VCU'},bot:{s:3,n:'Illinois'},sp:'Illinois -11.5',st:'wb',score:'55-76'},
     {id:'S12',rd:2,top:{s:10,n:'Texas A&M'},bot:{s:2,n:'Houston'},sp:'Houston -10.5',st:'wb',score:'57-88'},
-    {id:'S13',rd:3,top:{s:9,n:'Iowa'},bot:{s:4,n:'Nebraska'},sp:'Nebraska -1.5',st:'lv',score:'20-27'},
+    {id:'S13',rd:3,top:{s:9,n:'Iowa'},bot:{s:4,n:'Nebraska'},sp:'Nebraska -1.5',st:'xt',score:'77-71'},
     {id:'S14',rd:3,top:{s:3,n:'Illinois'},bot:{s:2,n:'Houston'},sp:'Houston -2.5',st:'p'},
-    {id:'S15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
+    {id:'S15',rd:4,top:{s:9,n:'Iowa'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
   {id:'midwest',name:'Midwest',games:[
     {id:'M1',rd:1,top:{s:1,n:'Michigan'},bot:{s:16,n:'Howard'},sp:'Michigan -28.5',st:'ct',score:'101-80'},
@@ -705,6 +706,8 @@ const LOG=[
   {date:'Mar 23',round:'R32',top:'UCLA',bot:'UConn',score:'57-73',spread:'UConn -4.5',result:'WIN',acq:null},
   {date:'Mar 22',round:'R32',top:'Tennessee',bot:'Virginia',score:'79-72',spread:'Tennessee -1.5',result:'WIN',acq:null},
   {date:'Mar 23',round:'R32',top:'Texas Tech',bot:'Alabama',score:'65-90',spread:'Texas Tech -1.5',result:'UPSET',acq:null},
+  {date:'Mar 26',round:'S16',top:'Texas',bot:'Purdue',score:'77-79',spread:'Purdue -7.5',result:'COVER',acq:'Purdue → Jay (Texas covered)'},
+  {date:'Mar 26',round:'S16',top:'Iowa',bot:'Nebraska',score:'77-71',spread:'Nebraska -1.5',result:'UPSET',acq:null},
 ];
 
 // ═══════════════════════════════════════════════
@@ -1135,8 +1138,14 @@ const SCHEDULE=[
   {date:'Thursday, March 26',sub:'Spreads locked · DraftKings · 9AM EST',games:[
     {time:'7:10 PM ET',reg:'w',id:'W14'},
     {time:'7:30 PM ET',reg:'s',id:'S13'},
-    {time:'9:45 PM ET',reg:'w',id:'W13'},
     {time:'10:05 PM ET',reg:'s',id:'S14'},
+    {time:'10:06 PM ET',reg:'w',id:'W13'},
+  ]},
+  {date:'Friday, March 27',sub:'Spreads locked · DraftKings · 9AM EST',games:[
+    {time:'7:10 PM ET',reg:'e',id:'E13'},
+    {time:'7:35 PM ET',reg:'m',id:'M13'},
+    {time:'9:45 PM ET',reg:'e',id:'E14'},
+    {time:'10:10 PM ET',reg:'m',id:'M14'},
   ]},
 ];
 
