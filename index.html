@@ -520,7 +520,7 @@ const ALLOC={
     {n:'Idaho',s:15,r:'S',elim:true},
   ],
   Alex:[
-    {n:'Houston',s:2,r:'S'},
+    {n:'Houston',s:2,r:'S',elim:true},
     {n:'Alabama',s:4,r:'M'},
     {n:'Duke',s:1,r:'E',acq:true,from:'Kaz'},
     {n:'North Carolina',s:6,r:'S',elim:true},
@@ -565,7 +565,7 @@ const ALLOC={
     {n:'High Point',s:12,r:'W',elim:true},
     {n:'Troy',s:13,r:'S',elim:true},
     {n:'Queens',s:15,r:'W',elim:true},
-    {n:'Arkansas',s:4,r:'W',acq:true,from:'Cody'},
+    {n:'Arkansas',s:4,r:'W',elim:true,acq:true,from:'Cody'},
   ],
   Kaz:[
     {n:'Duke',s:1,r:'E',elim:true},
@@ -614,9 +614,9 @@ const REGIONS=[
     {id:'W10',rd:2,top:{s:11,n:'Texas'},bot:{s:3,n:'Gonzaga'},sp:'Gonzaga -6.5',st:'xt',score:'74-68'},
     {id:'W11',rd:2,top:{s:1,n:'Arizona'},bot:{s:9,n:'Utah State'},sp:'Arizona -12.5',st:'ct',score:'78-66'},
     {id:'W12',rd:2,top:{s:7,n:'Miami (FL)'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'wb',score:'69-79'},
-    {id:'W13',rd:3,top:{s:1,n:'Arizona'},bot:{s:4,n:'Arkansas'},sp:'Arizona -8.5',st:'p'},
+    {id:'W13',rd:3,top:{s:1,n:'Arizona'},bot:{s:4,n:'Arkansas'},sp:'Arizona -8.5',st:'wt',score:'109-88'},
     {id:'W14',rd:3,top:{s:11,n:'Texas'},bot:{s:2,n:'Purdue'},sp:'Purdue -7.5',st:'cb',score:'77-79'},
-    {id:'W15',rd:4,top:{s:null,n:'TBD'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
+    {id:'W15',rd:4,top:{s:1,n:'Arizona'},bot:{s:2,n:'Purdue'},sp:null,st:'p'},
   ]},
   {id:'south',name:'South',games:[
     {id:'S3',rd:1,top:{s:5,n:'Vanderbilt'},bot:{s:12,n:'McNeese'},sp:'Vanderbilt -8.5',st:'wt',score:'78-68'},
@@ -632,8 +632,8 @@ const REGIONS=[
     {id:'S11',rd:2,top:{s:11,n:'VCU'},bot:{s:3,n:'Illinois'},sp:'Illinois -11.5',st:'wb',score:'55-76'},
     {id:'S12',rd:2,top:{s:10,n:'Texas A&M'},bot:{s:2,n:'Houston'},sp:'Houston -10.5',st:'wb',score:'57-88'},
     {id:'S13',rd:3,top:{s:9,n:'Iowa'},bot:{s:4,n:'Nebraska'},sp:'Nebraska -1.5',st:'xt',score:'77-71'},
-    {id:'S14',rd:3,top:{s:3,n:'Illinois'},bot:{s:2,n:'Houston'},sp:'Houston -2.5',st:'p'},
-    {id:'S15',rd:4,top:{s:9,n:'Iowa'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
+    {id:'S14',rd:3,top:{s:3,n:'Illinois'},bot:{s:2,n:'Houston'},sp:'Houston -2.5',st:'xt',score:'65-55'},
+    {id:'S15',rd:4,top:{s:9,n:'Iowa'},bot:{s:3,n:'Illinois'},sp:null,st:'p'},
   ]},
   {id:'midwest',name:'Midwest',games:[
     {id:'M1',rd:1,top:{s:1,n:'Michigan'},bot:{s:16,n:'Howard'},sp:'Michigan -28.5',st:'ct',score:'101-80'},
@@ -708,6 +708,8 @@ const LOG=[
   {date:'Mar 23',round:'R32',top:'Texas Tech',bot:'Alabama',score:'65-90',spread:'Texas Tech -1.5',result:'UPSET',acq:null},
   {date:'Mar 26',round:'S16',top:'Texas',bot:'Purdue',score:'77-79',spread:'Purdue -7.5',result:'COVER',acq:'Purdue → Jay (Texas covered)'},
   {date:'Mar 26',round:'S16',top:'Iowa',bot:'Nebraska',score:'77-71',spread:'Nebraska -1.5',result:'UPSET',acq:null},
+  {date:'Mar 27',round:'S16',top:'Arizona',bot:'Arkansas',score:'109-88',spread:'Arizona -8.5',result:'WIN',acq:null},
+  {date:'Mar 27',round:'S16',top:'Illinois',bot:'Houston',score:'65-55',spread:'Houston -2.5',result:'UPSET',acq:null},
 ];
 
 // ═══════════════════════════════════════════════
