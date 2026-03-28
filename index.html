@@ -521,7 +521,7 @@ const ALLOC={
   ],
   Alex:[
     {n:'Houston',s:2,r:'S',elim:true},
-    {n:'Alabama',s:4,r:'M'},
+    {n:'Alabama',s:4,r:'M',elim:true},
     {n:'Duke',s:1,r:'E',elim:true,acq:true,from:'Kaz'},
     {n:'North Carolina',s:6,r:'S',elim:true},
     {n:'Texas A&M',s:10,r:'S',elim:true},
@@ -599,7 +599,7 @@ const REGIONS=[
     {id:'E11',rd:2,top:{s:5,n:"St. John's"},bot:{s:4,n:'Kansas'},sp:"St. John's -3.5",st:'ct',score:'67-65'},
     {id:'E12',rd:2,top:{s:7,n:'UCLA'},bot:{s:2,n:'UConn'},sp:'UConn -4.5',st:'wb',score:'57-73'},
     {id:'E13',rd:3,top:{s:1,n:'Duke'},bot:{s:5,n:"St. John's"},sp:'Duke -6.5',st:'ct',score:'80-75'},
-    {id:'E14',rd:3,top:{s:3,n:'Michigan St'},bot:{s:2,n:'UConn'},sp:'UConn -1.5',st:'p'},
+    {id:'E14',rd:3,top:{s:3,n:'Michigan St'},bot:{s:2,n:'UConn'},sp:'UConn -1.5',st:'lv',score:'60-63'},
     {id:'E15',rd:4,top:{s:1,n:'Duke'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
   {id:'west',name:'West',games:[
@@ -649,9 +649,9 @@ const REGIONS=[
     {id:'M10',rd:2,top:{s:5,n:'Texas Tech'},bot:{s:4,n:'Alabama'},sp:'Texas Tech -1.5',st:'xb',score:'65-90'},
     {id:'M11',rd:2,top:{s:6,n:'Tennessee'},bot:{s:3,n:'Virginia'},sp:'Tennessee -1.5',st:'wt',score:'79-72'},
     {id:'M12',rd:2,top:{s:7,n:'Kentucky'},bot:{s:2,n:'Iowa State'},sp:'Iowa State -4.5',st:'wb',score:'63-82'},
-    {id:'M13',rd:3,top:{s:1,n:'Michigan'},bot:{s:4,n:'Alabama'},sp:'Michigan -8.5',st:'lv',score:'77-67'},
-    {id:'M14',rd:3,top:{s:6,n:'Tennessee'},bot:{s:2,n:'Iowa State'},sp:'Iowa State -3.5',st:'p'},
-    {id:'M15',rd:4,top:{s:null,n:'TBD'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
+    {id:'M13',rd:3,top:{s:1,n:'Michigan'},bot:{s:4,n:'Alabama'},sp:'Michigan -8.5',st:'wt',score:'90-77'},
+    {id:'M14',rd:3,top:{s:6,n:'Tennessee'},bot:{s:2,n:'Iowa State'},sp:'Iowa State -3.5',st:'lv',score:'54-41'},
+    {id:'M15',rd:4,top:{s:1,n:'Michigan'},bot:{s:null,n:'TBD'},sp:null,st:'p'},
   ]},
 ];
 
@@ -712,6 +712,7 @@ const LOG=[
   {date:'Mar 27',round:'S16',top:'Arizona',bot:'Arkansas',score:'109-88',spread:'Arizona -8.5',result:'WIN',acq:null},
   {date:'Mar 27',round:'S16',top:'Illinois',bot:'Houston',score:'65-55',spread:'Houston -2.5',result:'UPSET',acq:null},
   {date:'Mar 27',round:'S16',top:'Duke',bot:"St. John's",score:'80-75',spread:'Duke -6.5',result:'COVER',acq:"Duke → Cody (St. John's covered)"},
+  {date:'Mar 27',round:'S16',top:'Michigan',bot:'Alabama',score:'90-77',spread:'Michigan -8.5',result:'WIN',acq:null},
 ];
 
 // ═══════════════════════════════════════════════
@@ -1149,7 +1150,7 @@ const SCHEDULE=[
     {time:'7:10 PM ET',reg:'e',id:'E13'},
     {time:'7:35 PM ET',reg:'m',id:'M13'},
     {time:'9:55 PM ET',reg:'e',id:'E14'},
-    {time:'10:10 PM ET',reg:'m',id:'M14'},
+    {time:'10:35 PM ET',reg:'m',id:'M14'},
   ]},
 ];
 
