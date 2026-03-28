@@ -4,7 +4,7 @@ on:
   schedule:
     # Every 10 minutes during tournament game windows
     # Games typically run noon-midnight ET = 17:00-05:00 UTC
-    # March 19-22 (R64/R32), March 27-30 (S16/E8), April 4+6 (F4/Champ)
+    # March 19-22 (R64/R32), March 26-30 (S16/E8), April 4+6 (F4/Champ)
     - cron: '*/10 16-23 19-22 3 *'        # R64 + R32 daytime (noon-8PM ET)
     - cron: '*/10 0-5 20-23 3 *'          # R64 + R32 late night (8PM-1AM ET, next UTC day)
     - cron: '*/10 16-23 26-30 3 *'        # Sweet 16 + Elite Eight daytime
@@ -20,6 +20,8 @@ on:
 
 permissions:
   contents: write
+  pages: write
+  id-token: write
 
 jobs:
   update-scores:
@@ -42,10 +44,36 @@ jobs:
           ODDS_API_KEY: ${{ secrets.ODDS_API_KEY }}
 
       - name: Commit and push if changed
+        id: commit
         run: |
-          git diff --quiet index.html && echo "No changes" && exit 0
+          git diff --quiet index.html && echo "No changes" && echo "changed=false" >> $GITHUB_OUTPUT && exit 0
           git config user.name "March Madness Bot"
           git config user.email "bot@users.noreply.github.com"
           git add index.html
           git commit -m "Update scores $(date -u +'%Y-%m-%d %H:%M UTC')"
           git push
+          echo "changed=true" >> $GITHUB_OUTPUT
+
+  deploy:
+    needs: update-scores
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+        with:
+          ref: main
+
+      - name: Setup Pages
+        uses: actions/configure-pages@v4
+
+      - name: Upload artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: '.'
+
+      - name: Deploy to GitHub Pages
+        id: deployment
+        uses: actions/deploy-pages@v4
