@@ -27,13 +27,17 @@ TOURNAMENT_END = datetime(2026, 4, 7)
 
 # Round dates for schedule generation
 ROUND_DATES = {
-    1: ["2026-03-19", "2026-03-20"],  # R64
-    2: ["2026-03-21", "2026-03-22"],  # R32
-    3: ["2026-03-26", "2026-03-27"],  # S16
-    4: ["2026-03-29", "2026-03-30"],  # E8
-    5: ["2026-04-04"],                 # Final Four
-    6: ["2026-04-06"],                 # Championship
+    1: ["2026-03-19", "2026-03-20"],  # R64 (Thu-Fri)
+    2: ["2026-03-21", "2026-03-22"],  # R32 (Sat-Sun)
+    3: ["2026-03-26", "2026-03-27"],  # S16 (Thu-Fri)
+    4: ["2026-03-28", "2026-03-29"],  # E8 (Sat-Sun)
+    5: ["2026-04-04"],                 # Final Four (Sat)
+    6: ["2026-04-06"],                 # Championship (Mon)
 }
+# NOTE: These dates are verified against ESPN/NCAA.com schedules.
+# If a game shows up on ESPN for a date not listed here, the
+# premature-spread-clearing logic will wipe its spread. Always
+# verify dates match the actual schedule before each round.
 
 ROUND_NAMES = {
     1: "R64", 2: "R32", 3: "S16", 4: "E8", 5: "F4", 6: "CHAMP"
