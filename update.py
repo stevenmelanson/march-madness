@@ -78,9 +78,9 @@ ADVANCEMENT = {
     "M9": ("M13", "top"), "M10": ("M13", "bot"),
     "M11": ("M14", "top"), "M12": ("M14", "bot"),
     "M13": ("M15", "top"), "M14": ("M15", "bot"),
-    # Final Four: E8 winners → F4 semis
-    "E15": ("F1", "top"), "W15": ("F1", "bot"),
-    "S15": ("F2", "top"), "M15": ("F2", "bot"),
+    # Final Four: East vs South, West vs Midwest
+    "E15": ("F1", "top"), "S15": ("F1", "bot"),
+    "W15": ("F2", "top"), "M15": ("F2", "bot"),
     # Championship
     "F1": ("CHAMP", "top"), "F2": ("CHAMP", "bot"),
 }

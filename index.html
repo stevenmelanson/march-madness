@@ -654,8 +654,8 @@ const REGIONS=[
     {id:'M15',rd:4,top:{s:1,n:'Michigan'},bot:{s:6,n:'Tennessee'},sp:'Michigan -7.5',st:'p'},
   ]},
   {id:'finalfour',name:'finalfour',games:[
-    {id:'F1',rd:5,top:{s:0,n:'TBD'},bot:{s:1,n:'Arizona'},sp:null,st:'p'},
-    {id:'F2',rd:5,top:{s:3,n:'Illinois'},bot:{s:0,n:'TBD'},sp:null,st:'p'},
+    {id:'F1',rd:5,top:{s:0,n:'TBD'},bot:{s:3,n:'Illinois'},sp:null,st:'p'},
+    {id:'F2',rd:5,top:{s:1,n:'Arizona'},bot:{s:0,n:'TBD'},sp:null,st:'p'},
     {id:'CHAMP',rd:6,top:{s:0,n:'TBD'},bot:{s:0,n:'TBD'},sp:null,st:'p'},
   ]},
 ];
@@ -1099,12 +1099,12 @@ function renderFinalFour(){
   const colors={East:'var(--east)',West:'var(--west)',South:'var(--south)',Midwest:'var(--mid)'};
   // Render F4 semis and championship
   let html='<div style="display:flex;flex-direction:column;gap:16px;width:100%">';
-  // Semi 1: East vs West
+  // Semi 1: East vs South
   html+='<div class="ffl" style="color:var(--muted2);margin-bottom:4px">Semifinal 1 — April 4</div>';
-  html+=buildFF4Card(f1,e8winners.East,'East',e8winners.West,'West',colors);
-  // Semi 2: South vs Midwest
+  html+=buildFF4Card(f1,e8winners.East,'East',e8winners.South,'South',colors);
+  // Semi 2: West vs Midwest
   html+='<div class="ffl" style="color:var(--muted2);margin-top:12px;margin-bottom:4px">Semifinal 2 — April 4</div>';
-  html+=buildFF4Card(f2,e8winners.South,'South',e8winners.Midwest,'Midwest',colors);
+  html+=buildFF4Card(f2,e8winners.West,'West',e8winners.Midwest,'Midwest',colors);
   // Championship
   html+='<div class="ffl" style="color:var(--gold);margin-top:12px;margin-bottom:4px">Championship — April 6</div>';
   if(champ&&champ.top.n!=='TBD'){
