@@ -981,9 +981,9 @@ function renderFlowBracket(){
   if(!container) return;
   container.innerHTML='';
 
-  const maxRd=Math.max(...REGIONS.flatMap(r=>r.games.map(g=>g.rd)));
+  const maxRd=Math.max(...REGIONS.filter(r=>r.id!=='finalfour').flatMap(r=>r.games.map(g=>g.rd)));
 
-  REGIONS.forEach(reg=>{
+  REGIONS.filter(reg=>reg.id!=='finalfour').forEach(reg=>{
     const section=document.createElement('div');
     section.className='brk-region';
     const titleCls=reg.id==='midwest'?'midwest':reg.id;
@@ -1135,12 +1135,12 @@ function buildFF4Card(game,team1,reg1,team2,reg2,colors){
   const c2=reg2?colors[reg2]:'var(--muted2)';
   html+=`<div class="mu2-row${topWon?' mu2-w':''}"><span class="mu2-seed" style="background:${c1}">${t1!=='TBD'?team1.s:'-'}</span>`;
   html+=`<span class="mu2-name">${t1}</span>`;
-  if(o1)html+=`<span class="mu2-owner" style="background:${plrColor(o1.owner)}">${o1.owner}</span>`;
+  if(o1)html+=`<span class="mu2-owner" style="background:${COLORS[o1.owner]||'#888'}18;color:${COLORS[o1.owner]||'#888'};border:1px solid ${COLORS[o1.owner]||'#888'}30">${o1.owner}</span>`;
   if(done)html+=`<span class="mu2-score${topWon?' sc-w':''}">${scores[0]}</span>`;
   html+=`</div>`;
   html+=`<div class="mu2-row${botWon?' mu2-w':''}"><span class="mu2-seed" style="background:${c2}">${t2!=='TBD'?team2.s:'-'}</span>`;
   html+=`<span class="mu2-name">${t2}</span>`;
-  if(o2)html+=`<span class="mu2-owner" style="background:${plrColor(o2.owner)}">${o2.owner}</span>`;
+  if(o2)html+=`<span class="mu2-owner" style="background:${COLORS[o2.owner]||'#888'}18;color:${COLORS[o2.owner]||'#888'};border:1px solid ${COLORS[o2.owner]||'#888'}30">${o2.owner}</span>`;
   if(done)html+=`<span class="mu2-score${botWon?' sc-w':''}">${scores[1]}</span>`;
   html+=`</div>`;
   if(game&&game.sp)html+=`<div class="mu2-sp">🔒 ${game.sp}</div>`;
