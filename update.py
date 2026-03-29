@@ -1195,18 +1195,10 @@ def main():
     if live_updates > 0:
         changes.append(f"{live_updates} live score updates")
 
-    # Fetch and update spreads — only for games playing TODAY.
+    # Fetch and update spreads for any pending game with teams set.
     # Once a spread is written (sp is not None), it is NEVER overwritten.
-    # We use ESPN's today scoreboard to know exactly which teams play today,
-    # so we don't lock in stale lines for tomorrow's games.
-    today_espn = fetch_espn_scores()  # No date param = today's games
-    today_teams = set()
-    for eg in today_espn:
-        for t in eg.get('teams', []):
-            today_teams.add(t['name'])
-            today_teams.add(t['full_name'])
-            today_teams.add(t['abbreviation'])
-
+    # The premature-spread-clearing logic below ensures we don't keep
+    # spreads for rounds that haven't started yet.
     games_needing_spreads = []
     for reg in regions:
         for g in reg['games']:
@@ -1214,18 +1206,10 @@ def main():
                 continue
             if g['top']['n'] == 'TBD' or g['bot']['n'] == 'TBD':
                 continue
-            # Check if either team is playing today per ESPN
-            top_match = g['top']['n'] in today_teams or any(
-                resolve_team_name(t, mapping) == g['top']['n'] for t in today_teams
-            )
-            bot_match = g['bot']['n'] in today_teams or any(
-                resolve_team_name(t, mapping) == g['bot']['n'] for t in today_teams
-            )
-            if top_match or bot_match:
-                games_needing_spreads.append(g)
+            games_needing_spreads.append(g)
 
     if games_needing_spreads:
-        print(f"\nFetching DraftKings spreads ({len(games_needing_spreads)} games playing today need spreads)...")
+        print(f"\nFetching DraftKings spreads ({len(games_needing_spreads)} games need spreads)...")
         dk_spreads = fetch_draftkings_spreads()
         if dk_spreads:
             spread_count = update_spreads_today_only(regions, dk_spreads, mapping, games_needing_spreads)
@@ -1235,7 +1219,7 @@ def main():
         else:
             print("  No spreads available (API key missing or no upcoming lines)")
     else:
-        print("\nNo games playing today need spreads — skipping Odds API call")
+        print("\nNo games need spreads — skipping Odds API call")
 
     # Clear premature spreads — any game whose round hasn't started yet
     # should not have a locked spread. Only today's games should have spreads.
