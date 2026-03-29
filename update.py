@@ -78,8 +78,11 @@ ADVANCEMENT = {
     "M9": ("M13", "top"), "M10": ("M13", "bot"),
     "M11": ("M14", "top"), "M12": ("M14", "bot"),
     "M13": ("M15", "top"), "M14": ("M15", "bot"),
-    # TODO: Add Final Four (F1, F2) and Championship (CHAMP) advancement
-    # when those game slots are added to index.html REGIONS data
+    # Final Four: E8 winners → F4 semis
+    "E15": ("F1", "top"), "W15": ("F1", "bot"),
+    "S15": ("F2", "top"), "M15": ("F2", "bot"),
+    # Championship
+    "F1": ("CHAMP", "top"), "F2": ("CHAMP", "bot"),
 }
 
 
@@ -1194,6 +1197,33 @@ def main():
 
     if live_updates > 0:
         changes.append(f"{live_updates} live score updates")
+
+    # Backfill advancement: ensure all completed games have winners advanced
+    # This catches cases where F1/F2/CHAMP slots were added after games completed
+    backfill_count = 0
+    all_games = {g['id']: g for reg in regions for g in reg['games']}
+    for game_id, (next_id, pos) in ADVANCEMENT.items():
+        game = all_games.get(game_id)
+        next_game = all_games.get(next_id)
+        if not game or not next_game:
+            continue
+        done_codes = ['wt', 'wb', 'ct', 'cb', 'xt', 'xb']
+        if game['st'] not in done_codes:
+            continue
+        # Determine winner
+        if game['st'] in ['wt', 'ct', 'xt']:
+            winner_name, winner_seed = game['top']['n'], game['top']['s']
+        else:
+            winner_name, winner_seed = game['bot']['n'], game['bot']['s']
+        # Check if target slot is still TBD
+        target = next_game['top'] if pos == 'top' else next_game['bot']
+        if target['n'] == 'TBD':
+            target['n'] = winner_name
+            target['s'] = winner_seed
+            backfill_count += 1
+            print(f"  ↗ Backfill: {winner_name} → {next_id} ({pos})")
+    if backfill_count > 0:
+        changes.append(f"{backfill_count} advancement backfills")
 
     # Fetch and update spreads for any pending game with teams set.
     # Once a spread is written (sp is not None), it is NEVER overwritten.
