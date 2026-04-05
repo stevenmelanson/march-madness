@@ -500,7 +500,7 @@ const ALLOC={
     {n:'UConn',s:2,r:'E',acq:true,from:'Mitchell'},
   ],
   Cole:[
-    {n:'Illinois',s:3,r:'S'},
+    {n:'Illinois',s:3,r:'S',elim:true},
     {n:'BYU',s:6,r:'W',elim:true},
     {n:'Louisville',s:6,r:'E',elim:true},
     {n:"Saint Mary's",s:7,r:'S',elim:true},
@@ -654,9 +654,9 @@ const REGIONS=[
     {id:'M15',rd:4,top:{s:1,n:'Michigan'},bot:{s:6,n:'Tennessee'},sp:'Michigan -7.5',st:'wt',score:'95-62'},
   ]},
   {id:'finalfour',name:'finalfour',games:[
-    {id:'F1',rd:5,top:{s:2,n:'UConn'},bot:{s:3,n:'Illinois'},sp:'Illinois -1.5',st:'lv',score:'57-50'},
-    {id:'F2',rd:5,top:{s:1,n:'Arizona'},bot:{s:1,n:'Michigan'},sp:'Michigan -5.5',st:'p'},
-    {id:'CHAMP',rd:6,top:{s:0,n:'TBD'},bot:{s:0,n:'TBD'},sp:null,st:'p'},
+    {id:'F1',rd:5,top:{s:2,n:'UConn'},bot:{s:3,n:'Illinois'},sp:'Illinois -1.5',st:'xt',score:'71-62'},
+    {id:'F2',rd:5,top:{s:1,n:'Arizona'},bot:{s:1,n:'Michigan'},sp:'Michigan -5.5',st:'lv',score:'32-48'},
+    {id:'CHAMP',rd:6,top:{s:2,n:'UConn'},bot:{s:0,n:'TBD'},sp:null,st:'p'},
   ]},
 ];
 
@@ -724,6 +724,7 @@ const LOG=[
   {date:'Mar 29',round:'E8',top:'Arizona',bot:'Purdue',score:'79-64',spread:'Arizona -5.5',result:'WIN',acq:null},
   {date:'Mar 29',round:'E8',top:'Michigan',bot:'Tennessee',score:'95-62',spread:'Michigan -7.5',result:'WIN',acq:null},
   {date:'Mar 29',round:'E8',top:'Duke',bot:'UConn',score:'72-73',spread:'Duke -5.5',result:'UPSET',acq:null},
+  {date:'Apr 4',round:'F4',top:'UConn',bot:'Illinois',score:'71-62',spread:'Illinois -1.5',result:'UPSET',acq:null},
 ];
 
 // ═══════════════════════════════════════════════
@@ -1234,7 +1235,7 @@ const SCHEDULE=[
   ]},
   {date:'Saturday, April 4',sub:'Spreads locked · DraftKings · 9AM EST',games:[
     {time:'6:09 PM ET',reg:'f',id:'F1'},
-    {time:'8:49 PM ET',reg:'f',id:'F2'},
+    {time:'9:19 PM ET',reg:'f',id:'F2'},
   ]},
 ];
 
