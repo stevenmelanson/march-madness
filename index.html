@@ -497,7 +497,8 @@ const ALLOC={
     {n:'Furman',s:15,r:'E',elim:true},
     {n:'Long Island',s:16,r:'W',elim:true},
     {n:'Virginia',s:3,r:'M',elim:true,acq:true,from:'Cody'},
-    {n:'UConn',s:2,r:'E',acq:true,from:'Mitchell'},
+    {n:'UConn',s:2,r:'E',elim:true,acq:true,from:'Mitchell'},
+    {n:'Michigan',s:1,r:'C',acq:true,from:'Kaz'},
   ],
   Cole:[
     {n:'Illinois',s:3,r:'S',elim:true},
@@ -571,7 +572,7 @@ const ALLOC={
   Kaz:[
     {n:'Duke',s:1,r:'E',elim:true},
     {n:'Gonzaga',s:3,r:'W',elim:true},
-    {n:'Michigan',s:1,r:'M',acq:true,from:'Cody'},
+    {n:'Michigan',s:1,r:'M',elim:true,acq:true,from:'Cody'},
     {n:'Arizona',s:1,r:'W',elim:true},
     {n:'Kansas',s:4,r:'E',elim:true},
     {n:'UCLA',s:7,r:'E',elim:true},
@@ -656,7 +657,7 @@ const REGIONS=[
   {id:'finalfour',name:'finalfour',games:[
     {id:'F1',rd:5,top:{s:2,n:'UConn'},bot:{s:3,n:'Illinois'},sp:'Illinois -1.5',st:'xt',score:'71-62'},
     {id:'F2',rd:5,top:{s:1,n:'Arizona'},bot:{s:1,n:'Michigan'},sp:'Michigan -5.5',st:'wb',score:'73-91'},
-    {id:'CHAMP',rd:6,top:{s:2,n:'UConn'},bot:{s:1,n:'Michigan'},sp:'Michigan -6.5',st:'lv',score:'39-48'},
+    {id:'CHAMP',rd:6,top:{s:2,n:'UConn'},bot:{s:1,n:'Michigan'},sp:'Michigan -6.5',st:'cb',score:'63-69'},
   ]},
 ];
 
@@ -726,6 +727,7 @@ const LOG=[
   {date:'Mar 29',round:'E8',top:'Duke',bot:'UConn',score:'72-73',spread:'Duke -5.5',result:'UPSET',acq:null},
   {date:'Apr 4',round:'F4',top:'UConn',bot:'Illinois',score:'71-62',spread:'Illinois -1.5',result:'UPSET',acq:null},
   {date:'Apr 5',round:'F4',top:'Arizona',bot:'Michigan',score:'73-91',spread:'Michigan -5.5',result:'WIN',acq:null},
+  {date:'Apr 7',round:'CHAMP',top:'UConn',bot:'Michigan',score:'63-69',spread:'Michigan -6.5',result:'COVER',acq:'Michigan → Jack (UConn covered)'},
 ];
 
 // ═══════════════════════════════════════════════
